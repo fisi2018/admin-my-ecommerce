@@ -3,6 +3,7 @@ import axios from "axios";
 import "./Categorias.css";
 import {API} from "../config";
 import DeleteIcon from '@material-ui/icons/Delete';
+import {showMessage,methodGet, methodDelete} from "./Tools";
 export default function Categorias(){
     const [categories,setCategories]=useState([]);
      const[isSubmit, setIsSubmit]=useState({
@@ -13,12 +14,21 @@ export default function Categorias(){
         new:false,
         err:""
     });
-    const showMessage=()=>{
-        const $message=document.getElementById("message-delete");
-        $message.classList.toggle("note-active")
+    const getCategories= async ()=>{
+        const url=`${API}/category/categories`;
+        methodGet(url,axios,(err)=>{
+            setIsSubmit({bool:true});
+            setError({new:true, err});
+        },(json)=>setCategories(json))
         
-        setTimeout(()=>{
-            $message.classList.toggle("note-active");
+    }
+    useEffect(()=>{
+        getCategories();
+    },[]);
+    useEffect(()=>{
+        getCategories();
+        if(isSubmit.bool){
+            showMessage("messageDelete");
             setIsSubmit({
                 bool:false,
                 deleted:""
@@ -27,80 +37,14 @@ export default function Categorias(){
                 new:false,
                 err:""
             })
-        },2000);
-    
-    }
-    const getCategories= async ()=>{
-        try{
-            const res= await axios.get(`${API}/category/categories`);
-            const json=await res.data;
-            if(json.error){
-                setIsSubmit({
-                    bool:true
-                })
-                setError({
-                    new:true,
-                    err:json.error
-                });
-                showMessage();
-            }
-            else{
-                console.log("JUSTO ANTES DE SETEAR CATEGORIES");
-                setCategories(json);
-            }
-        }catch(err){
-            setIsSubmit({
-                bool:true
-            });
-            setError({
-                new:true,
-                err
-            });
-            showMessage();
         }
-
-    }
-    useEffect(()=>{
-        getCategories();
-    },[]);
-    useEffect(()=>{
-        getCategories();
     },[isSubmit.bool])
     const eliminar= async (id)=>{
-        try{
-            
-            const res= await axios.delete(`${API}/category/${id}`)
-            const json= await res.data;
-            if(json.error){
-                
-                setError({
-                    new:true,
-                    err:json.error
-                });
-                setIsSubmit({
-                    bool:true
-                });
-                showMessage();
-            }else{
-
-                setIsSubmit({
-                    bool:true,
-                    deleted:json.message
-                });
-                showMessage();
-            }
-        }catch(err){
-            
-            setError({
-                new:true,
-                err
-            });
-            setIsSubmit({
-                bool:true
-            });
-            showMessage();
-        }
-
+        const url=`${API}/category/${id}`;
+        methodDelete(url,axios,(err)=>{
+            setError({new:true},err);
+            setIsSubmit({bool:true});
+        },()=>setIsSubmit({bool:true}));
     }
     return(
         <div className="categorias-block">
@@ -113,7 +57,7 @@ export default function Categorias(){
                         </button></li>
                       )      ) }
             </ul>
-            {isSubmit.bool && ((error.new)?<h2 id="message-delete"> {error.err}</h2>
+            {((error.new)?<h2 id="message-delete"> {error.err}</h2>
             :<h2 className="note" id="message-delete"> {isSubmit.deleted} </h2>)}
         </div>
     )

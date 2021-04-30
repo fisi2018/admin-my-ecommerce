@@ -7,7 +7,7 @@ import {Link} from "react-router-dom";
 import imgUser from "../img/user.png";
 import axios from "axios";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import {showMessage, methodCreate} from "./Tools";
+import {showMessage, methodCreate, methodGet} from "./Tools";
 const cookies=new Cookies();
 export const Home=()=>{
     const[index, setIndex]=useState(0);
@@ -43,23 +43,12 @@ export const Home=()=>{
     const [categories, setCategories]=useState([]);
     const {formData}=formProduct;
     const {formDataNews}=formNews;
-    const getCategories= async ()=>{
-        try{
-            const res= await axios.get(`${API}/category/categories`);
-            const json=res.data;
-            setCategories(json);
-        }catch(err){
-            setIsSubmit({
-                ...isSubmit,
-                message:"message",
-                bool:true
-            });
-            
-            setError({
-                new:true,
-                err
-            });
-        }
+    const getCategories= ()=>{
+        const url=`${API}/category/categories`;
+        methodGet(url,axios,(err)=>{
+            setIsSubmit({...isSubmit,message:"message",bool:true});
+            setError({new:true,err});
+        },(json)=>setCategories(json));
     };
     useEffect(()=>{
         getCategories();
