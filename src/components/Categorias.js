@@ -8,7 +8,7 @@ export default function Categorias(){
     const [categories,setCategories]=useState([]);
      const[isSubmit, setIsSubmit]=useState({
         bool:false,
-        deleted:""
+        deleted:"Borrado"
     });
     const[error,setError]=useState({
         new:false,
@@ -28,10 +28,10 @@ export default function Categorias(){
     useEffect(()=>{
         getCategories();
         if(isSubmit.bool){
-            showMessage("messageDelete");
+            showMessage("message-delete");
             setIsSubmit({
-                bool:false,
-                deleted:""
+                ...isSubmit,
+                bool:false
             });
             setError({
                 new:false,
@@ -39,12 +39,13 @@ export default function Categorias(){
             })
         }
     },[isSubmit.bool])
-    const eliminar= async (id)=>{
+    const eliminar= (id)=>{
         const url=`${API}/category/${id}`;
         methodDelete(url,axios,(err)=>{
-            setError({new:true},err);
+            setError({new:true,err});
             setIsSubmit({bool:true});
-        },()=>setIsSubmit({bool:true}));
+        },(message)=>{
+            setIsSubmit({bool:true, deleted:message})});
     }
     return(
         <div className="categorias-block">

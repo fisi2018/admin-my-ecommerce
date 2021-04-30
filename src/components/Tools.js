@@ -36,10 +36,27 @@ export const methodDelete= async (url,axios,reqError,reqSuccess)=>{
     try{
         const res= await axios.delete(url);
         const json= await res.data;
+        console.log(json.message, "MENSAJE");
+        if(json.error){
+            console.log("ENTRANDO AL ERROR");
+            reqError(json.error);
+        }else{
+            console.log("ELSE");
+            reqSuccess(json.message);
+        }
+    }catch(err){
+        console.log("ENTRANDO AL CATCH");
+        reqError(err);
+    }
+}
+export const methodUpdate= async (url,form,axios,reqError,reqSuccess)=>{
+    try{
+        const res= await axios.put(url,form);
+        const json= await res.data;
         if(json.error){
             reqError(json.error);
         }else{
-            reqSuccess();
+            reqSuccess(json.message);
         }
     }catch(err){
         reqError(err);

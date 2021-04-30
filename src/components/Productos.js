@@ -6,11 +6,11 @@ import AddIcon from '@material-ui/icons/Add';
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 import EditIcon from '@material-ui/icons/Edit';
 import RemoveIcon from '@material-ui/icons/Remove';
+import {showMessage, methodGet, methodDelete, methodUpdate} from "./Tools";
 import "./Categorias.css";
 import "./Productos.css";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { FormatColorFill, Input } from "@material-ui/icons";
 export default function Productos(){
     const [productos,setProductos]=useState([]);
     const [open,setOpen]=useState(false);
@@ -26,55 +26,30 @@ export default function Productos(){
         bool:false,
         deleted:{}
     });
-    const showMessage=()=>{
-         const $message=document.getElementById("message-delete");
-        $message.classList.toggle("note-active");
-        setTimeout(()=>{
-            $message.classList.toggle("note-active");
-            setIsSubmit({
-                bool:false,
-                deleted:""
-            });
-            setError({
-                new:false,
-                err:""
-            })
-        },2000);
-    }
-    const getProductos= async ()=>{
-        try{
-            const res=await axios.get(`${API}/producto/products`);
-            const json= await res.data;
-            if(json.error){
-                setError({
-                    new:true,
-                    err:json.error
-                });
-                setIsSubmit({
-                    bool:true
-                });
-                showMessage();
-            }
-            else{
-                setProductos(json);
-            }
-        }catch(err){
-            setError({
-                new:true,
-                err
-            });
-            setIsSubmit({
-                bool:true
-            });
-            showMessage();
-        }
+    const getProductos=()=>{
+        const url=`${API}/producto/products`;
+        methodGet(url,axios,(err)=>{
+            setError({new:true,err});
+            setIsSubmit({bool:true});
+        },(json)=>setProductos(json));
     }
     useEffect(()=>{
         getProductos();
     },[]);
     useEffect(()=>{
         getProductos();
-    },[isSubmit]);
+        if(isSubmit.bool){
+            showMessage("message-delete");
+            setIsSubmit({
+                ...isSubmit,
+                bool:false
+            });
+            setError({
+                ...error,
+                new:false
+            })
+        }
+    },[isSubmit.bool]);
     useEffect(()=>{
         getProductos();
     },[edit]);
@@ -83,37 +58,12 @@ export default function Productos(){
             getProductos();
         }
     },[open]);
-    const eliminar= async (id)=>{
-        try{
-            const res=await axios.delete(`${API}/producto/${id}`);
-            const json= await res.data;
-            if(json.error){
-                setError({
-                    new:true,
-                    err:json.error
-                });
-                setIsSubmit({
-                    bool:true
-                });
-                showMessage();
-            }else{
-                setIsSubmit({
-                    bool:true,
-                    deleted:json.message
-                });
-                showMessage();
-            }
-
-        }catch(err){
-            setError({
-                new:true,
-                err
-            });
-            setIsSubmit({
-                bool:true
-            });
-            showMessage();
-        }
+    const eliminar= (id)=>{
+        const url=`${API}/producto/${id}`;
+        methodDelete(url,axios,(err)=>{
+            setError({new:true,err});
+            setIsSubmit({bool:true});
+        },(message)=>setIsSubmit({bool:true, deleted:message}));
     }
     const handleChange=(e)=>{
         setFormEdit({
@@ -121,21 +71,21 @@ export default function Productos(){
             [e.target.name]:e.target.value
         })
     }
-    const actualizarProducto=async(id)=>{
+    const actualizarProducto=(id)=>{
         const url=`${API}/producto/update`;
         let obj=formEdit;
         obj={
             ...obj,
             id
         }
-        let res= await axios.put(url,obj),
-        json=await res.data;
-
-        setEdit({...edit,
-                [id]:false})
-        
+        methodUpdate(url,obj,axios,(err)=>{
+            setError({new:true,err});
+            setIsSubmit({bool:true});
+        },()=>{
+            setEdit({...edit,[id]:false});
+        });
     }
-   const deleteColor= async (color,id)=>{
+   const deleteColor=(color,id)=>{
        let array={};
         const url=`${API}/producto/updateColor`;
         let formImg= new FormData();
@@ -172,13 +122,10 @@ export default function Productos(){
         formImg.set("colors",JSON.stringify(array));
         formImg.set("id",id);
         
-        console.log(formImg, "ANTES DEL PUT");
-        let res= await axios.put(url,formImg);
-        console.log("DESPUES DE LA PETICION PUT");
-        let json= await res.data;
-        setEdit({
-            colorEdited:true
-        });
+        methodUpdate(url,formImg,axios,(err)=>{
+            setError({new:true,err});
+            setIsSubmit({bool:true});
+        },()=>setEdit({colorEdited:true}));
     }
     const actualizarColor= async (id)=>{
         const url=`${API}/producto/updateColor`;
@@ -221,12 +168,10 @@ export default function Productos(){
         formNewColor.set(count.toString(),formColor.imgColor);
         formNewColor.set("colors",JSON.stringify(list));
         formNewColor.set("id",id);
-        console.log(formNewColor,"FORM anres de put");
-        console.log(list);
-        console.log(formColor)
-        let res= await axios.put(url,formNewColor);
-        let json= await res.data;
-        setOpen(false);
+        methodUpdate(url,formNewColor,axios,(err)=>{
+            setError({new:true, err});
+            setIsSubmit({bool:true});
+        },()=>setOpen(false));
     }
     const handleActColor=(e)=>{
         if(e.target.name==="imgColor"){
