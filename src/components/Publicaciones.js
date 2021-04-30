@@ -5,6 +5,7 @@ import "./Publicaciones.css";
 import "./Productos.css";
 import {API} from "../config";
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import {methodDelete, methodGet, showMessage} from "./Tools";
 import DeleteIcon from '@material-ui/icons/Delete';
 export default function Publicaciones(){
     const [error,setError]=useState({
@@ -16,84 +17,30 @@ export default function Publicaciones(){
         deleted:""
     });
     const [tables, setTables]=useState([]);
-    const showMessage=()=>{
-        const $message=document.getElementById("message-delete");
-        $message.classList.toggle("note-active");
-        setTimeout(()=>{
-            $message.classList.toggle("note-active");
-            setIsSubmit({
-                bool:false,
-                deleted:""
-            });
-            setError({
-                new:false,
-                err:""
-            })
-        },2000);
-    }
     const getPublicaciones=async ()=>{
-        try{
-            const res=await axios.get(`${API}/table/tables`);
-            const json=await res.data;
-            if(json.error){
-                setError({
-                    new:true,
-                    err:json.error
-                });
-                setIsSubmit({
-                    bool:true
-                })
-                showMessage();
-            }else{
-                setTables(json);
-            }
-        }catch(err){
-            setError({
-                new:true,
-                err
-            });
-            setIsSubmit({
-                bool:true
-            });
-        }
+        const url=`${API}/table/tables`;
+        methodGet(url,axios,(err)=>{
+            setError({new:true,err});
+            setIsSubmit({bool:true});
+        },(json)=>setTables(json));
     }
 useEffect(()=>{
     getPublicaciones();
 },[]);
 useEffect(()=>{
     getPublicaciones();
-},[isSubmit]);
-    const eliminar= async (id)=>{
-    try{
-        const res = await axios.delete(`${API}/table/${id}`);
-        const json = await res.data;
-        if(json.error){
-            setError({
-                new:true,
-                err:json.error
-            });
-            setIsSubmit({
-                bool:true
-            });
-            showMessage();
-        }else{
-            setIsSubmit({
-                bool:true,
-                deleted:json.message
-            });
-            showMessage();
-        }
-    }catch(err){
-        setError({
-            new:true,
-            err
-        });
-        setIsSubmit({
-            bool:true
-        });
-        showMessage();
+    if(isSubmit.bool){
+        showMessage("message-delete");
+        setIsSubmit({...isSubmit,bool:false});
+        setError({...error,new:false});
     }
-
+},[isSubmit.bool]);
+    const eliminar= (id)=>{
+        const url=`${API}/table/${id}`;
+        methodDelete(url,axios,(err)=>{
+            setError({new:true,err});
+            setIsSubmit({bool:true});
+        },(message)=>setIsSubmit({bool:true,deleted:message}));
 }
 
     return(
@@ -126,8 +73,8 @@ useEffect(()=>{
                     </li>
                 ))}
             </ul>
-            {isSubmit.bool && ((error.new)?<h2 className="error" id="message-delete"> {error.err}</h2>
-            :<h2 className="note" id="message-delete"> {isSubmit.deleted} </h2>)}
+            {(error.new)?<h2 className="error" id="message-delete"> {error.err}</h2>
+            :<h2 className="note" id="message-delete"> {isSubmit.deleted} </h2>}
         </div>
     )
 }

@@ -1,6 +1,7 @@
 import { useState,useEffect } from "react";
 import axios from "axios";
 import {API} from "../config";
+import {methodCreate, methodDelete, methodGet, showMessage} from "./Tools";
 import "./Categorias.css";
 import "./Productos.css";
 import "./Usuarios.css";
@@ -15,93 +16,41 @@ export default function Usuarios(){
     });
     const [isSubmit,setIsSubmit]=useState({
        bool:false,
+       message:"",
        add:false,
        added:"",
         deleted:""
     });
-    const showMessage=(ruta)=>{
-        const $message=document.getElementById(ruta);
-        $message.classList.toggle("note-active");
-        setTimeout(()=>{
-            $message.classList.toggle("note-active");
-            setIsSubmit({
-                bool:false,
-                deleted:""
-            });
-            setError({
-                new:false,
-                err:""
-            })
-        },2000);
-    }
-    const getUsers= async ()=>{
-        try{
-            const res=await axios.get(`${API}/user/users`);
-            const json=await res.data;
-            if(json.error){
-                setError({
-                    new:true,
-                    err:json.error
-                });
-                setIsSubmit({
-                    bool:true
-                });
-                showMessage("message-delete");
-            }else{
-                setUsers(json);
-            }
-        }catch(err){
-            setError({
-                new:true,
-                err
-            });
-            setIsSubmit({
-                bool:true
-            });
-            showMessage("message-delete");
-        }
+    const getUsers= ()=>{
+        const url=`${API}/user/users`;
+        methodGet(url,axios,(err)=>{
+            setError({new:true,err});
+            setIsSubmit({bool:true,message:"message-delete"});
+        },(json)=>setUsers(json));
     }
     useEffect(()=>{
         getUsers();
     },[]);
     useEffect(()=>{
         getUsers();
-    },[isSubmit.add || isSubmit.bool]);
-    const addUser= async ()=>{
-        try{
-            const res = await axios.post(`${API}/user/createUser`,{
-                name:form.name,
-                username:form.username,
-                password:form.password,
-                role:form.role
-            });
-            const json= await res.data;
-            if(json.error){
-                setError({
-                    new:true,
-                    err:json.error
-                });
-                setIsSubmit({
-                    add:true
-                });
-                showMessage("message-add");
-            }else{
-                setIsSubmit({
-                    add:true,
-                    added:json.name
-                });
-                showMessage("message-add");
-            }
-        }catch(err){
-            setError({
-                new:true,
-                err
-            });
-            setIsSubmit({
-                add:true
-            });
-            showMessage("message-add");
+        if(isSubmit.bool || isSubmit.add){
+            showMessage(isSubmit.message);
+            setError({...error,new:false});
+            setIsSubmit({...isSubmit,bool:false});
         }
+    },[isSubmit.add || isSubmit.bool]);
+    const addUser= ()=>{
+        const url=`${API}/user/createUser`;
+        const formPost={
+            name:form.name,
+            username:form.username,
+            password:form.password,
+            role:form.role
+        }
+        methodCreate(url,formPost,axios,(err)=>{
+            setError({new:true, err});
+            setIsSubmit({add:true,message:"message-add"});
+        },()=>setIsSubmit({add:true, message:"message-add"}));
     }
     const handleChange=(e)=>{
         setForm({
@@ -109,36 +58,13 @@ export default function Usuarios(){
             [e.target.name]:e.target.value
         })
     }
-    const eliminar= async (id)=>{
-        try{
-            const res= await axios.delete(`${API}/user/${id}`);
-            const json=await res.data;
-            if(json.error){
-                setError({
-                    new:true,
-                    err:json.error
-                });
-                setIsSubmit({
-                    bool:true
-                });
-                showMessage("message-delete");
-            }else{
-                setIsSubmit({
-                    bool:true,
-                    deleted:json.message
-                });
-                showMessage("message-delete");
-            }
-        }catch(err){
-            setError({
-                new:true,
-                err
-            });
-            setIsSubmit({
-                bool:true
-            });
-            showMessage("message-delete");
-        }
+    const eliminar= (id)=>{
+        const url=`${API}/user/${id}`;
+        methodDelete(url,axios,(err)=>{
+            setError({new:true, err});
+            setIsSubmit({bool:true, message:"message-delete"});
+        },(message)=>setIsSubmit({bool:true, deleted:message, message:"message-delete"}));
+        
     }
     return(
         <div className="categorias-block">
@@ -161,8 +87,8 @@ export default function Usuarios(){
                 </li>
             ))}
             </ul>
-            {isSubmit.bool && ((error.new)?<h2 id="message-delete"> {error.err}</h2>
-            :<h2 id="message-delete"> {isSubmit.deleted} </h2>)}
+            {(error.new)?<h2 id="message-delete"> {error.err}</h2>
+            :<h2 id="message-delete"> {isSubmit.deleted} </h2>}
             <div className="form-block user-field">
                 <h2>Agregar nuevo usuario</h2>
                 <input onChange={handleChange} className="input-element" name="name" placeholder="Nombre" type="text"/>
@@ -171,8 +97,8 @@ export default function Usuarios(){
                 <input onChange={handleChange} className="input-element" name="role" placeholder="Rango" type="number"/>
                 <button  onClick={addUser} className="button-element">Agregar</button>
             </div>
-             {isSubmit.add && ((error.new)?<h2 id="message-add"> {error.err}</h2>
-            :<h2 className="note" id="message-add">Se ha agregado {isSubmit.added} exitosamente </h2>)}
+             { (error.new)?<h2 id="message-add"> {error.err}</h2>
+            :<h2 className="note" id="message-add">Se ha agregado {isSubmit.added} exitosamente </h2>}
         </div>
     );
 }
