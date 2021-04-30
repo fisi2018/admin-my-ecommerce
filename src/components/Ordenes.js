@@ -4,6 +4,7 @@ import {API} from "../config";
 import { useState,useEffect } from "react";
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import {methodDelete, methodGet, showMessage} from "./Tools";
 import axios from "axios";
 export default function Ordenes(){
     const [ordenes,setOrdenes]=useState([]);
@@ -16,63 +17,32 @@ export default function Ordenes(){
         new:false,
         err:""
     });
-    const showMessage=()=>{
-        const $message=document.getElementById("message-delete");
-        $message.classList.toggle("note-active")
-        
-        setTimeout(()=>{
-            $message.classList.toggle("note-active");
-            setIsSubmit({
-                bool:false,
-                deleted:""
-            });
-            setError({
-                new:false,
-                err:""
-            })
-        },2000);
-    }
-    const getOrdenes=async ()=>{
+    const getOrdenes= ()=>{
         const url=`${API}/order/orders`;
-        let res= await axios.get(url),
-        json= await res.data;
-        setOrdenes(json);
+        methodGet(url,axios,(err)=>{
+            setError({new:true,err});
+            setIsSubmit({bool:true});
+        },(json)=>setOrdenes(json));
     }
     useEffect(()=>{
         getOrdenes();
-    },[isSubmit.bool]);
-    const completeOrder= async (id)=>{
-        try{
-        const url=`${API}/order/${id}`;
-        let res=await axios.delete(url),
-        json=await res.data;
-        if(json.error){
-                setError({
-                    new:true,
-                    err:json.error
-                });
-                setIsSubmit({
-                    bool:true
-                });
-                showMessage();
-            }
-            else{
-                setIsSubmit({
-                    bool:true,
-                    deleted:json.message
-                });
-                showMessage();
-            }
-        }catch(err){
-            setError({
-                new:true,
-                err
-            });
+        if(isSubmit.bool){
+            showMessage("message-delete");
             setIsSubmit({
-                bool:true
+                ...isSubmit,
+                bool:false
             });
-            showMessage();
+            setError({err,new:false});
         }
+    },[isSubmit.bool]);
+    const completeOrder= (id)=>{
+        const url=`${API}/order/${id}`;
+        methodDelete(url,axios,(err)=>{
+            setError({new:true,err});
+            setIsSubmit({bool:true});
+        },(message)=>{
+            setIsSubmit({bool:true, deleted:message});
+        })
     }
     return(
         <div className="categorias-block">
@@ -130,8 +100,8 @@ export default function Ordenes(){
                     ))
                 }
             </ul>
-            {isSubmit.bool && ((error.new)?<h2 id="message-delete"> {error.err}</h2>
-            :<h2 className="note" id="message-delete"> {isSubmit.deleted} </h2>)}
+            {(error.new)?<h2 id="message-delete"> {error.err}</h2>
+            :<h2 className="note" id="message-delete"> {isSubmit.deleted} </h2>}
         </div>
     )
 }
