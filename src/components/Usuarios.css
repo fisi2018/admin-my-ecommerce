@@ -1,0 +1,12 @@
+.user-size > * {
+  flex: 1;
+}
+.user-size {
+  width: 40rem;
+}
+.user-size:first-child > *:last-child {
+  flex: 1;
+}
+.user-field {
+  margin: 3rem;
+}

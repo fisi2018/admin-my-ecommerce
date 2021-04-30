@@ -1,0 +1,197 @@
+.large {
+  height: 35rem;
+}
+.select-element {
+  font-family: "Montserrat";
+  border-radius: 8px;
+  padding: 0.25rem;
+  font-size: 1rem;
+  outline: 0;
+}
+header > h1 {
+  font-family: "Montserrat";
+  letter-spacing: 0.25rem;
+  font-size: 3rem;
+  font-weight: 500;
+  text-align: center;
+  color: black;
+}
+header {
+  position: sticky;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  padding: 0.5rem;
+  background-color: white;
+  top: 0;
+  z-index: 998;
+  display: flex;
+  justify-content: space-between;
+}
+.hamburger {
+  outline: 0;
+}
+.button-logout {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  color: white;
+  background-color: black;
+  outline: 0;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: all 0.3s ease;
+}
+.button-logout:hover {
+  opacity: 0.6;
+  transform: translateY(-0.25rem);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+.button-logout > p {
+  padding: 0 0.3rem;
+}
+.burger-container,
+.logout-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 15%;
+}
+
+.checkbox-list {
+  flex-wrap: wrap;
+}
+.checkbox-list > label {
+  font-family: "Montserrat";
+}
+.check-element {
+  margin: 0 0.25rem 0 0.7rem;
+  color: #00a862;
+  background-color: #00a862;
+}
+.input-img {
+  font-family: "Montserrat";
+  position: relative;
+  height: 2.5rem;
+  outline: 0;
+}
+.input-img::before {
+  content: "Agregar imagen";
+  background-color: black;
+  text-align: center;
+  color: white;
+  cursor: pointer;
+  position: absolute;
+  width: 8.5rem;
+  top: 0rem;
+  left: 0;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+.input-img:hover::before {
+  letter-spacing: 0.05rem;
+}
+.text-area {
+  font-family: "Montserrat";
+  border-radius: 10px;
+  outline: 0;
+}
+.none {
+  display: none;
+}
+.menu-burger {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  background-color: #323233;
+  flex-direction: column;
+  transform: translateX(-100%);
+  transition: all 0.3s ease;
+  z-index: 999;
+}
+.show {
+  transform: translateX(0);
+}
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 40%;
+  background-color: #d9d9d9;
+}
+.profile-container > h3 {
+  color: black;
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+.list-container {
+  display: flex;
+  justify-content: space-evenly;
+  width: 15rem;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  height: 60%;
+}
+.list-container > li > a {
+  color: white;
+  text-decoration: none;
+  font-family: "Montserrat";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s ease;
+}
+.list-container > li > a:hover {
+  background-color: #383838;
+  letter-spacing: 0.25rem;
+}
+.list-container > li {
+  list-style: none;
+  display: flex;
+  flex: 1;
+}
+.photo-profile {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+}
+.addColor-block {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  flex-wrap: wrap;
+}
+.addColor-block > * {
+  margin-top: 0.25rem;
+}
+.small {
+  width: 5rem;
+}
+.buttonAddColor {
+  margin: 0;
+  outline: 0;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+
+  color: green;
+  background-color: transparent;
+  height: fit-content;
+  transition: all 0.3s ease;
+}
+.buttonAddColor > svg {
+  width: 2rem;
+  height: auto;
+}
+.buttonAddColor:hover {
+  transform: translateY(-1rem);
+}
