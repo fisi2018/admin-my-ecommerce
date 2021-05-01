@@ -34,8 +34,8 @@ export default function Categorias(){
                 bool:false
             });
             setError({
-                new:false,
-                err:""
+                ...error,
+                new:false
             })
         }
     },[isSubmit.bool])

@@ -5,3 +5,12 @@
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
 }
+.container-complete {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 40rem;
+}
+.container-complete > h2 {
+  font-weight: 400;
+}

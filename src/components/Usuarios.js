@@ -45,6 +45,8 @@ export default function Usuarios(){
             name:form.name,
             username:form.username,
             password:form.password,
+            phone:form.phone,
+            facebook:form.facebook,
             role:form.role
         }
         methodCreate(url,formPost,axios,(err)=>{
@@ -87,17 +89,19 @@ export default function Usuarios(){
                 </li>
             ))}
             </ul>
-            {(error.new)?<h2 id="message-delete"> {error.err}</h2>
-            :<h2 id="message-delete"> {isSubmit.deleted} </h2>}
+            {(error.new)?<h2 className="note error" id="message-delete"> {error.err}</h2>
+            :<h2 className="note" id="message-delete"> {isSubmit.deleted} </h2>}
             <div className="form-block user-field">
                 <h2>Agregar nuevo usuario</h2>
                 <input onChange={handleChange} className="input-element" name="name" placeholder="Nombre" type="text"/>
+                <input onChange={handleChange} placeholder="Celular" className="input-element" name="phone" type="text"/>
+                <input onChange={handleChange} placeholder="Facebook" className="input-element" name="facebook" type="text"/>
                 <input onChange={handleChange} className="input-element" name="username" placeholder="Usuario" type="email"/>
                 <input onChange={handleChange} className="input-element" name="password" placeholder="Contraseña" type="password"/>
                 <input onChange={handleChange} className="input-element" name="role" placeholder="Rango" type="number"/>
                 <button  onClick={addUser} className="button-element">Agregar</button>
             </div>
-             { (error.new)?<h2 id="message-add"> {error.err}</h2>
+             { (error.new)?<h2 className="note error" id="message-add"> {error.err}</h2>
             :<h2 className="note" id="message-add">Se ha agregado {isSubmit.added} exitosamente </h2>}
         </div>
     );

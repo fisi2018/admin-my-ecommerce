@@ -1,6 +1,7 @@
 import "./Ordenes.css";
 import "./Categorias.css";
 import {API} from "../config";
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import { useState,useEffect } from "react";
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -32,7 +33,7 @@ export default function Ordenes(){
                 ...isSubmit,
                 bool:false
             });
-            setError({err,new:false});
+            setError({...error,new:false});
         }
     },[isSubmit.bool]);
     const completeOrder= (id)=>{
@@ -100,6 +101,7 @@ export default function Ordenes(){
                     ))
                 }
             </ul>
+            {(ordenes.length===0) && <div className="container-complete"><h2>Todas las entregas han sido completadas</h2><AssignmentTurnedInIcon style={{color:"gray"}}/></div> }
             {(error.new)?<h2 id="message-delete"> {error.err}</h2>
             :<h2 className="note" id="message-delete"> {isSubmit.deleted} </h2>}
         </div>

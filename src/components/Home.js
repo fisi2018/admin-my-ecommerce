@@ -96,8 +96,8 @@ export const Home=()=>{
                 added:{}
             });
             setError({
-                new:false,
-                err:""
+                ...error,
+                new:false
             })
          
         }
@@ -218,7 +218,7 @@ export const Home=()=>{
                 <input onChange={handleCategory} placeholder="Nombre" className="input-element" type="text"/>
                 <button onClick={addCategory} className="button-element">Agregar</button>
             </div>
-            { ((error.new)?<h2 className="error" id="message">Ha ocurrido un error:{error.err}</h2>:
+            { ((error.new)?<h2 className="error" id="message">{error.err}</h2>:
             <h2 className="note" id="message">Se ha agregado {category} exitosamente</h2>) }
         </div>
         <div className="container-form">
@@ -278,7 +278,7 @@ export const Home=()=>{
                 <input onChange={handleContent} name="img" className="input-img" type="file" accept="image/*"/>
                 <button onClick={sendContent} className="button-element">Agregar</button>
             </div>
-            { ((error.new)?<h2 className="error" id="messageContent">Ha ocurrido un error:{error.err}</h2>:
+            { ((error.new)?<h2 className="note error" id="messageContent">{error.err}</h2>:
             <h2 className="note" id="messageContent">Se ha agregado {formNews.title} exitosamente</h2>) }
         </div>
         </>

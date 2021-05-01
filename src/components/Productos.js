@@ -24,7 +24,7 @@ export default function Productos(){
     });
     const[isSubmit,setIsSubmit]=useState({
         bool:false,
-        deleted:{}
+        deleted:""
     });
     const getProductos=()=>{
         const url=`${API}/producto/products`;
@@ -245,7 +245,7 @@ export default function Productos(){
                                 ...list,
                                 [el._id]:true
                             })
-                        } >
+                        }>
                             <VisibilityIcon/><p>Ver detalles</p></button>
                         </div>
                         <div className="container-button">
@@ -299,7 +299,7 @@ export default function Productos(){
                     </>
                 ))}
             </ul>
-             {isSubmit.bool && ((error.new)?<h2 className="error" id="message-delete"> {error.err}</h2>
+             { ((error.new)?<h2 className="note error" id="message-delete"> {error.err}</h2>
             :<h2 className="note" id="message-delete"> {isSubmit.deleted} </h2>)}
         </div>
     )

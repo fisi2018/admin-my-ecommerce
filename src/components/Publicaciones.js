@@ -17,6 +17,7 @@ export default function Publicaciones(){
         deleted:""
     });
     const [tables, setTables]=useState([]);
+    const [list,setList]=useState({});
     const getPublicaciones=async ()=>{
         const url=`${API}/table/tables`;
         methodGet(url,axios,(err)=>{
@@ -53,11 +54,20 @@ useEffect(()=>{
                     <p>Acciones</p>
                 </li>
                 {tables.map((el)=>(
+                    <>
                     <li key={el._id} className="category-element product-size">
                         <p>{el.title}</p>
                         <p>{el.category}</p>
                         <div className="container-button">
-                        <button className="button-logout">
+                        <button className="button-logout" onClick={
+                            ()=>(list[el._id])?setList({
+                                ...list,
+                                [el._id]:false
+                            }):setList({
+                                ...list,
+                                [el._id]:true
+                            })
+                        }>
                             <VisibilityIcon/>
                             <p>Ver detalles</p>
                         </button>
@@ -71,6 +81,14 @@ useEffect(()=>{
                         </button>
                         </div>
                     </li>
+                    { list[el._id] && <div className="details-container row">
+                        <img className="img-element" src={`${API}/table/img/${el._id}`} alt={el.name}/>
+                                        <div className="description-block">
+
+                                        <p>{el.description}</p>
+                                        </div>
+                    </div> }
+                            </>
                 ))}
             </ul>
             {(error.new)?<h2 className="error" id="message-delete"> {error.err}</h2>
