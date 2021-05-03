@@ -3,6 +3,7 @@ import axios from "axios";
 import "./Categorias.css";
 import "./Publicaciones.css";
 import "./Productos.css";
+import Loader from "./Loader";
 import {API} from "../config";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import {methodDelete, methodGet, showMessage} from "./Tools";
@@ -17,13 +18,16 @@ export default function Publicaciones(){
         deleted:""
     });
     const [tables, setTables]=useState([]);
+    const [loading,setLoading]= useState(true);
     const [list,setList]=useState({});
     const getPublicaciones=async ()=>{
         const url=`${API}/table/tables`;
         methodGet(url,axios,(err)=>{
             setError({new:true,err});
             setIsSubmit({bool:true});
-        },(json)=>setTables(json));
+            setLoading(false);
+        },(json)=>{setTables(json);
+        setLoading(false)});
     }
 useEffect(()=>{
     getPublicaciones();
@@ -91,6 +95,7 @@ useEffect(()=>{
                             </>
                 ))}
             </ul>
+            {loading && <Loader/> }
             {(error.new)?<h2 className="error" id="message-delete"> {error.err}</h2>
             :<h2 className="note" id="message-delete"> {isSubmit.deleted} </h2>}
         </div>

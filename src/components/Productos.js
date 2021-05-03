@@ -6,6 +6,7 @@ import AddIcon from '@material-ui/icons/Add';
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 import EditIcon from '@material-ui/icons/Edit';
 import RemoveIcon from '@material-ui/icons/Remove';
+import Loader from "./Loader";
 import {showMessage, methodGet, methodDelete, methodUpdate} from "./Tools";
 import "./Categorias.css";
 import "./Productos.css";
@@ -13,6 +14,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import DeleteIcon from '@material-ui/icons/Delete';
 export default function Productos(){
     const [productos,setProductos]=useState([]);
+    const[loading,setLoading]=useState(true);
     const [open,setOpen]=useState(false);
     const [edit,setEdit]=useState({});
     const [list, setList]=useState({});
@@ -31,7 +33,9 @@ export default function Productos(){
         methodGet(url,axios,(err)=>{
             setError({new:true,err});
             setIsSubmit({bool:true});
-        },(json)=>setProductos(json));
+            setLoading(false);
+        },(json)=>{setProductos(json);
+        setLoading(false)});
     }
     useEffect(()=>{
         getProductos();
@@ -255,7 +259,8 @@ export default function Productos(){
                         </div>
                     </li>
                     {list[el._id] && <div className="details-container row">
-                                        <img className="img-element" src={`${API}/producto/img/${el._id}`} alt={el.name}/>
+                                        
+                                        <img className="img-element" src={`${API}/producto/img/${el._id}`} alt={el.name}/> 
                                         <div className="description-block">
 
                                         <p>{el.description}</p>
@@ -299,6 +304,7 @@ export default function Productos(){
                     </>
                 ))}
             </ul>
+            {loading && <Loader/> }
              { ((error.new)?<h2 className="note error" id="message-delete"> {error.err}</h2>
             :<h2 className="note" id="message-delete"> {isSubmit.deleted} </h2>)}
         </div>

@@ -8,6 +8,7 @@ import Ordenes from "./Ordenes";
 import Usuarios from "./Usuarios";
 import Categorias from "./Categorias";
 import Publicaciones from "./Publicaciones";
+import Loader from "./Loader";
 import {API} from "../config";
 import React,{BrowserRouter as Router, Route, Switch,Link} from "react-router-dom";
 const bcrypt=require("bcryptjs");
@@ -16,6 +17,7 @@ export const First=()=>{
     const burger=useRef();
     const burger2=useRef();
     const asidePanel=useRef();
+    const [isSubmit,setIsSubmit]=useState(false);
     const [isLogin,setIsLogin]=useState(false);
     const [form,setForm]=useState({});
     useEffect(() => {
@@ -72,7 +74,12 @@ export const First=()=>{
                     <input onChange={handleChange} placeholder="Username" className="input-element" name="username" type="email" />
                     <h3>Contraseña</h3>
                     <input onChange={handleChange} placeholder="Password" className="input-element" name="password" type="password"/>
-                    <button onClick={sendInformation} className="button-element">Login</button>
+                    {(!isSubmit)? 
+                    <button onClick={()=>{
+                        setIsSubmit(true);
+                        sendInformation();
+                    }} className="button-element">Login</button>
+                    : <Loader/> }
                 </div>
             </div>
         )

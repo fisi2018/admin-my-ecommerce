@@ -1,6 +1,7 @@
 import "./Ordenes.css";
 import "./Categorias.css";
 import {API} from "../config";
+import Loader from "./Loader";
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import { useState,useEffect } from "react";
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -10,6 +11,7 @@ import axios from "axios";
 export default function Ordenes(){
     const [ordenes,setOrdenes]=useState([]);
     const[list,setList]=useState({});
+    const [loading,setLoading]=useState(true);
     const[isSubmit, setIsSubmit]=useState({
         bool:false,
         deleted:""
@@ -23,7 +25,9 @@ export default function Ordenes(){
         methodGet(url,axios,(err)=>{
             setError({new:true,err});
             setIsSubmit({bool:true});
-        },(json)=>setOrdenes(json));
+            setLoading(false);
+        },(json)=>{setOrdenes(json);
+        setLoading(false)});
     }
     useEffect(()=>{
         getOrdenes();
@@ -101,7 +105,9 @@ export default function Ordenes(){
                     ))
                 }
             </ul>
-            {(ordenes.length===0) && <div className="container-complete"><h2>Todas las entregas han sido completadas</h2><AssignmentTurnedInIcon style={{color:"gray"}}/></div> }
+            {(!loading && ordenes.length===0) ? 
+        <div className="container-complete"><h2>Todas las entregas han sido completadas</h2><AssignmentTurnedInIcon style={{color:"gray"}}/></div>     
+        :( loading && <Loader/>) }
             {(error.new)?<h2 id="message-delete"> {error.err}</h2>
             :<h2 className="note" id="message-delete"> {isSubmit.deleted} </h2>}
         </div>

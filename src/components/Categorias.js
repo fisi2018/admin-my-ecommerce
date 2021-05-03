@@ -2,10 +2,12 @@ import { useEffect,useState } from "react";
 import axios from "axios";
 import "./Categorias.css";
 import {API} from "../config";
+import Loader from "./Loader";
 import DeleteIcon from '@material-ui/icons/Delete';
 import {showMessage,methodGet, methodDelete} from "./Tools";
 export default function Categorias(){
     const [categories,setCategories]=useState([]);
+    const [loading,setLoading]=useState(true);
      const[isSubmit, setIsSubmit]=useState({
         bool:false,
         deleted:"Borrado"
@@ -19,7 +21,10 @@ export default function Categorias(){
         methodGet(url,axios,(err)=>{
             setIsSubmit({bool:true});
             setError({new:true, err});
-        },(json)=>setCategories(json))
+            setLoading(false);
+        },(json)=>{
+            setLoading(false);
+            setCategories(json)})
         
     }
     useEffect(()=>{
@@ -58,6 +63,7 @@ export default function Categorias(){
                         </button></li>
                       )      ) }
             </ul>
+            {loading && <Loader/> }
             {((error.new)?<h2 id="message-delete"> {error.err}</h2>
             :<h2 className="note" id="message-delete"> {isSubmit.deleted} </h2>)}
         </div>

@@ -5,11 +5,23 @@ import {methodCreate, methodDelete, methodGet, showMessage} from "./Tools";
 import "./Categorias.css";
 import "./Productos.css";
 import "./Usuarios.css";
+import Loader from "./Loader";
 import DeleteIcon from '@material-ui/icons/Delete';
 
 export default function Usuarios(){
     const [users,setUsers]=useState([]);
-    const[form,setForm]=useState({});
+    const [loading,setLoading]=useState({
+        bool:true,
+        add:false
+    });
+    const[form,setForm]=useState({
+        name:"",
+        username:"",
+        phone:"",
+        password:"",
+        facebook:"",
+        role:""
+    });
     const [error,setError]=useState({
         new:false,
         err:""
@@ -26,7 +38,9 @@ export default function Usuarios(){
         methodGet(url,axios,(err)=>{
             setError({new:true,err});
             setIsSubmit({bool:true,message:"message-delete"});
-        },(json)=>setUsers(json));
+            setLoading(false);
+        },(json)=>{setUsers(json);
+        setLoading({bool:false})});
     }
     useEffect(()=>{
         getUsers();
@@ -52,7 +66,17 @@ export default function Usuarios(){
         methodCreate(url,formPost,axios,(err)=>{
             setError({new:true, err});
             setIsSubmit({add:true,message:"message-add"});
-        },()=>setIsSubmit({add:true, message:"message-add"}));
+            setLoading({add:false});
+        },()=>{setIsSubmit({add:true, message:"message-add"});
+    setLoading({add:false})});
+    setForm({
+        username:"",
+        password:"",
+        name:"",
+        phone:"",
+        facebook:"",
+        role:""
+    })
     }
     const handleChange=(e)=>{
         setForm({
@@ -89,17 +113,24 @@ export default function Usuarios(){
                 </li>
             ))}
             </ul>
+            {loading.bool && <Loader/> }
             {(error.new)?<h2 className="note error" id="message-delete"> {error.err}</h2>
             :<h2 className="note" id="message-delete"> {isSubmit.deleted} </h2>}
             <div className="form-block user-field">
                 <h2>Agregar nuevo usuario</h2>
-                <input onChange={handleChange} className="input-element" name="name" placeholder="Nombre" type="text"/>
-                <input onChange={handleChange} placeholder="Celular" className="input-element" name="phone" type="text"/>
-                <input onChange={handleChange} placeholder="Facebook" className="input-element" name="facebook" type="text"/>
-                <input onChange={handleChange} className="input-element" name="username" placeholder="Usuario" type="email"/>
-                <input onChange={handleChange} className="input-element" name="password" placeholder="Contraseña" type="password"/>
-                <input onChange={handleChange} className="input-element" name="role" placeholder="Rango" type="number"/>
-                <button  onClick={addUser} className="button-element">Agregar</button>
+                <input value={form.name} onChange={handleChange} className="input-element" name="name" placeholder="Nombre" type="text"/>
+                <input value={form.phone} onChange={handleChange} placeholder="Celular" className="input-element" name="phone" type="text"/>
+                <input value={form.facebook} onChange={handleChange} placeholder="Facebook" className="input-element" name="facebook" type="text"/>
+                <input value={form.username} onChange={handleChange} className="input-element" name="username" placeholder="Usuario" type="email"/>
+                <input value={form.password} onChange={handleChange} className="input-element" name="password" placeholder="Contraseña" type="password"/>
+                <input value={form.role} onChange={handleChange} className="input-element" name="role" placeholder="Rango" type="number"/>
+                {!loading.add?
+                <button  onClick={()=>{
+                    setLoading({add:true});
+                    addUser();
+                }} className="button-element">Agregar</button>
+            :<Loader/>    
+            }
             </div>
              { (error.new)?<h2 className="note error" id="message-add"> {error.err}</h2>
             :<h2 className="note" id="message-add">Se ha agregado {isSubmit.added} exitosamente </h2>}

@@ -4,6 +4,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import {API} from "../config";
 import Cookies from "universal-cookie";
 import {Link} from "react-router-dom";
+import Loader from "./Loader";
 import imgUser from "../img/user.png";
 import axios from "axios";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
@@ -11,6 +12,12 @@ import {showMessage, methodCreate, methodGet} from "./Tools";
 const cookies=new Cookies();
 export const Home=()=>{
     const[index, setIndex]=useState(0);
+    const [loading,setLoading]= useState({
+        bool:false,
+        productMessage:false,
+        colorMessage:false,
+        contentMessage:false
+    });
    
     const[isSubmit, setIsSubmit]=useState({
         bool:false,
@@ -26,18 +33,25 @@ export const Home=()=>{
     const [category,setCategory]=useState("");
     const [size,setSize]=useState({});
     const [colors,setColors]=useState({});
-    const[formColor,setFormColor]=useState({});
+    const[formColor,setFormColor]=useState({
+        nameColor:"",
+        codeColor:"",
+        imgColor:""
+    });
     const [formProduct, setFormProduct]=useState({
         name:"",
         description:"",
-        priceMayor:0,
-        priceMenor:0,
+        priceMayor:"",
+        priceMenor:"",
         sizes:"",
         img:"",
         formData:``
     }
     );
     const [formNews, setFormNews]=useState({
+        title:"",
+        category:"",
+        description:"",
         formDataNews:``
     });
     const [categories, setCategories]=useState([]);
@@ -76,12 +90,17 @@ export const Home=()=>{
         setError({
             new:true,
             err
-        })
+        });
+        setLoading({bool:false});
         },()=>{setIsSubmit({
             ...isSubmit,
             bool:true,
             message:"message"
-        })});
+        });
+        setLoading({
+            bool:false
+        });
+    setCategory("")});
     }
   
     useEffect(()=>{
@@ -136,6 +155,14 @@ export const Home=()=>{
             ...isSubmit,
             colorMessage:true
             });  
+        setFormColor({
+            nameColor:"",
+            codeColor:"",
+            imgColor:null
+        });
+        setLoading({
+            colorMessage:false
+        })
     }
     useEffect(()=>{
         if(index!==0){
@@ -179,10 +206,33 @@ export const Home=()=>{
        methodCreate(url,formData,axios,(err)=>{
         setIsSubmit({productMessage:true,message:"messageProduct"});
          setError({new:true,err});
+         setLoading({productMessage:false});
        },()=>{
            setIsSubmit({productMessage:true,message:"messageProduct"});
            setIndex(0);
-           setFormProduct({...formProduct,formData:new FormData()});
+           setFormProduct({
+            name:"",
+            description:"",
+            priceMayor:"",
+            priceMenor:"",
+            category:"",
+            img:"",   
+            formData:new FormData()});
+            setFormColor({
+                nameColor:"",
+                codeColor:"",
+                imgColor:""
+            });
+            setSize({
+                s:false,
+                l:false,
+                m:false,
+                xl:false,
+                xll:false,
+                xlll:false,
+                Estandar:false
+            })
+           setLoading({productMessage:false});
        });
       
     }
@@ -206,8 +256,16 @@ export const Home=()=>{
         const url=`${API}/table/createTable`;
         methodCreate(url,formDataNews,axios,(err)=>{
             setIsSubmit({contentMessage:true, message:"messageContent"});
-            setError({new:true, err})
-        },()=>setIsSubmit({contentMessage:true, message:"messageContent"}));
+            setError({new:true, err});
+            setLoading({contentMessage:false});
+        },()=>{setIsSubmit({contentMessage:true, message:"messageContent"})
+    setLoading({contentMessage:false});
+    setFormNews({
+        title:"",
+        category:"",
+        description:"",
+        img:""
+    })});
     }
     return(
         <>
@@ -215,8 +273,12 @@ export const Home=()=>{
             
             <div className="form-block">
                 <h2>Agregar categoría</h2>
-                <input onChange={handleCategory} placeholder="Nombre" className="input-element" type="text"/>
-                <button onClick={addCategory} className="button-element">Agregar</button>
+                <input value={category} onChange={handleCategory} placeholder="Nombre" className="input-element" type="text"/>
+                { !loading.bool ? <button onClick={()=>{
+                    setLoading({bool:true});
+                    addCategory();
+                }} className="button-element">Agregar</button>
+                : <Loader/> }
             </div>
             { ((error.new)?<h2 className="error" id="message">{error.err}</h2>:
             <h2 className="note" id="message">Se ha agregado {category} exitosamente</h2>) }
@@ -225,45 +287,56 @@ export const Home=()=>{
 
             <div className="form-block large">
                 <h2>Agregar producto</h2>
-                <input onChange={handleProduct} name="name" placeholder="Nombre" className="input-element" type="text"/>
-                <input onChange={handleProduct} name="description" placeholder="Descripcion corta" className="input-element" type="text"/>
-                <input onChange={handleProduct} name="priceMayor" placeholder="Precio al por mayor" className="input-element" type="number"/>
-                <input onChange={handleProduct} name="priceMenor" placeholder="Precio al por menor" className="input-element" type="number"/>
+                <input value={formProduct.name} onChange={handleProduct} name="name" placeholder="Nombre" className="input-element" type="text"/>
+                <input value={formProduct.description} onChange={handleProduct} name="description" placeholder="Descripcion corta" className="input-element" type="text"/>
+                <input value={formProduct.priceMayor} onChange={handleProduct} name="priceMayor" placeholder="Precio al por mayor" className="input-element" type="number"/>
+                <input value={formProduct.priceMenor} onChange={handleProduct} name="priceMenor" placeholder="Precio al por menor" className="input-element" type="number"/>
                 <div className="addColor-block"> 
-                <input onChange={handleProductColor} name="codeColor" type="color"/>
-                <input onChange={handleProductColor} className="input-element small" placeholder="Color" name="nameColor" type="text"/>
-                <input onChange={handleProductColor} name="imgColor" className="input-img" type="file" accept="img/*" />
-                <button className="buttonAddColor" onClick={addColor} >
+                <input value={formColor.codeColor} onChange={handleProductColor} name="codeColor" type="color"/>
+                <input value={formColor.nameColor} onChange={handleProductColor} className="input-element small" placeholder="Color" name="nameColor" type="text"/>
+                <input files={formColor.imgColor} onChange={handleProductColor} name="imgColor" className="input-img" type="file" accept="img/*" />
+                {!loading.colorMessage?
+                <button className="buttonAddColor" onClick={()=>{
+                    setLoading({colorMessage:true});
+                    addColor();
+                }} >
                     <AddCircleIcon className="circle" />
                 </button>
+            : <Loader/> }
                 </div>
-                <select onChange={handleProduct} className="select-element"  name="category" >
+                <select value={formProduct.category} onChange={handleProduct} className="select-element"  name="category" >
                     <option value="---">Seleccione una categoría</option>
                     {
                     categories.map((el)=>(
                          <option key={el._id} value={el._id}>{el.name}</option>
                     ))
                 }</select>
-                <input onChange={handleProduct} name="img" className="input-img" type="file" accept="image/*"/>
+                <input files={formProduct.img} onChange={handleProduct} name="img" className="input-img" type="file" accept="image/*"/>
                 <h3>Tallas</h3>
                 <div className="checkbox-list">
-                <input onChange={handleChecked} name="s" className="check-element" id="s" type="checkbox"/>
+                <input checked={size.s} onChange={handleChecked} name="s" className="check-element" id="s" type="checkbox"/>
                 <label htmlFor="s">S</label>
-                <input onChange={handleChecked} name="m" className="check-element" id="m" type="checkbox"/>
+                <input checked={size.m} onChange={handleChecked} name="m" className="check-element" id="m" type="checkbox"/>
                 <label htmlFor="m">M</label>
-                <input onChange={handleChecked} name="l" className="check-element" id="l" type="checkbox"/>
+                <input checked={size.l} onChange={handleChecked} name="l" className="check-element" id="l" type="checkbox"/>
                 <label htmlFor="l">L</label>
-                <input onChange={handleChecked} name="xl" className="check-element" id="xl" type="checkbox"/>
+                <input checked={size.xl} onChange={handleChecked} name="xl" className="check-element" id="xl" type="checkbox"/>
                 <label htmlFor="xl">XL</label>
-                <input onChange={handleChecked} name="xxl" className="check-element" id="xxl" type="checkbox"/>
+                <input checked={size.xxl} onChange={handleChecked} name="xxl" className="check-element" id="xxl" type="checkbox"/>
                 <label htmlFor="xxl">XXL</label>
-                <input onChange={handleChecked} name="xxxl" className="check-element" id="xxxl" type="checkbox"/>
+                <input checked={size.xxxl} onChange={handleChecked} name="xxxl" className="check-element" id="xxxl" type="checkbox"/>
                 <label htmlFor="xxxl">XXXL</label>
-                <input onChange={handleChecked} name="Estandar" className="check-element" id="stan" type="checkbox"/>
+                <input checked={size.Estandar} onChange={handleChecked} name="Estandar" className="check-element" id="stan" type="checkbox"/>
                 <label htmlFor="stan">Estándar</label>
 
                 </div>
-                <button onClick={addProduct} className="button-element">Agregar</button>
+                {!loading.productMessage?
+                <button onClick={()=>{
+                    setLoading({productMessage:true});
+                    addProduct();
+                }} className="button-element">Agregar</button>
+                : <Loader/>
+            }
             </div>
              <h2 id="messageColor" className="note" >Se ha agregado el color exitosamente </h2> 
             { ((error.new)?<h2 className="note error" id="messageProduct">Ha ocurrido un error:{error.err}</h2>:
@@ -272,11 +345,16 @@ export const Home=()=>{
         <div className="container-form">
             <div className="form-block">
                 <h2>Agregar contenido</h2>
-                <input onChange={handleContent} name="title" placeholder="Título" className="input-element" type="text"/>
-                <input onChange={handleContent} name="category" placeholder="Tema" className="input-element" type="text"/>
-                <textarea onChange={handleContent} placeholder="Contenido" className="text-area" name="description" cols="35" rows="7"></textarea>
-                <input onChange={handleContent} name="img" className="input-img" type="file" accept="image/*"/>
-                <button onClick={sendContent} className="button-element">Agregar</button>
+                <input value={formNews.title} onChange={handleContent} name="title" placeholder="Título" className="input-element" type="text"/>
+                <input value={formNews.category} onChange={handleContent} name="category" placeholder="Tema" className="input-element" type="text"/>
+                <textarea value={formNews.description} onChange={handleContent} placeholder="Contenido" className="text-area" name="description" cols="35" rows="7"></textarea>
+                <input files={formNews.img} onChange={handleContent} name="img" className="input-img" type="file" accept="image/*"/>
+                {!loading.contentMessage?
+                <button onClick={()=>{
+                    setLoading({contentMessage:true});
+                    sendContent();
+                }} className="button-element">Agregar</button>   
+            :<Loader/>}
             </div>
             { ((error.new)?<h2 className="note error" id="messageContent">{error.err}</h2>:
             <h2 className="note" id="messageContent">Se ha agregado {formNews.title} exitosamente</h2>) }
