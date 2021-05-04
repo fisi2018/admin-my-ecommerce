@@ -88,7 +88,7 @@ export default function Ordenes(){
                             </button>
                             </div>
                         </li>
-                        {list[el._id] && <div className="details-container">
+                        {list[el._id] && <div key={el._id} className="details-container">
                             {
                                 el.list.map((obj)=>(
                                     <li key={obj._id} className="category-element orden-style">

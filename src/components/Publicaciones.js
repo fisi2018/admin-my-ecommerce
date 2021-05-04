@@ -85,7 +85,7 @@ useEffect(()=>{
                         </button>
                         </div>
                     </li>
-                    { list[el._id] && <div className="details-container row">
+                    { list[el._id] && <div key={el._id} className="details-container row">
                         <img className="img-element" src={`${API}/table/img/${el._id}`} alt={el.name}/>
                                         <div className="description-block">
 

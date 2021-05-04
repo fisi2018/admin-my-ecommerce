@@ -38,6 +38,7 @@ p {
 .input-element {
   font-family: "Montserrat";
   height: 1.5rem;
+  position: relative;
   font-size: 1.25rem;
   outline: 0;
   border: 0;
@@ -87,6 +88,11 @@ p {
 .note-active {
   opacity: 1;
   transform: translateY(-100%);
+}
+.validation-message {
+  margin-top: 0;
+  font-weight: 400;
+  color: red;
 }
 @media screen and (max-width: 420px) {
   .container-form > h1 {

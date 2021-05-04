@@ -95,6 +95,7 @@ header {
 }
 .text-area {
   font-family: "Montserrat";
+  resize: none;
   border-radius: 10px;
   outline: 0;
 }

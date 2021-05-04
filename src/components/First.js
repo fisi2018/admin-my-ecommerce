@@ -10,77 +10,38 @@ import Categorias from "./Categorias";
 import Publicaciones from "./Publicaciones";
 import Loader from "./Loader";
 import {API} from "../config";
+import {validationForm} from "./Tools";
+import {useForm} from "../hooks/useForm";
 import React,{BrowserRouter as Router, Route, Switch,Link} from "react-router-dom";
 const bcrypt=require("bcryptjs");
 const cookies=new Cookies();
+const initialForm={
+    username:"",
+    password:""
+}
 export const First=()=>{
     const burger=useRef();
     const burger2=useRef();
     const asidePanel=useRef();
-    const [isSubmit,setIsSubmit]=useState(false);
-    const [isLogin,setIsLogin]=useState(false);
-    const [form,setForm]=useState({});
-    useEffect(() => {
-        (cookies.get("id"))?setIsLogin(true):setIsLogin(false);
-        
-    }, [])
-    const sendInformation= async ()=>{
-        
-           
-                 try{
-                    const res= await  axios.get(`${API}/user/users`);
-                 const json= await res.data;  
-                
-                 if(json.length>0){
-                     let response;
-                json.forEach((user)=>{
-                    if(user.username===form.username && bcrypt.compareSync(form.password,user.password)){
-                        response=user;
-                        cookies.set("id",response._id,{path:"/"});
-                       cookies.set("username",response.username,{path:"/"});
-                     cookies.set("name",response.name,{path:"/"});
-                      cookies.set("role",response.role,{path:"/"});
-                     setIsLogin(true);
-                    }
-                    else{
-                        console.log("USUARIO Y/O CONTRASEÑA INCORRECTAS");
-                    }
-                })
-                 }else{
-                  
-                     console.log("HA OCURRIDO UN ERROR");
-                 }
-
-                    
-                }catch(err){
-                    
-                    console.log("HA OCURRIDO UN ERROR", err)
-                }
-       
-    }
-    const handleChange=(e)=>{
-        setForm({
-            ...form,
-            [e.target.name]:e.target.value
-        })
-    }
+    const {form,errors,isSubmit,isLogin,handleChange,handleBlur,handleSubmit}=useForm(initialForm,validationForm);
+    
     const login=()=>{
         return(
             <div className="container-form">
             <h1>Bienvenido a Admin-MyEcommerce</h1>
-                <div className="form-block" >
+                <form onSubmit={handleSubmit} className="form-block" >
                     <h2>Inicio de Sesión</h2>
                     <h3>Usuario</h3>
-                    <input onChange={handleChange} placeholder="Username" className="input-element" name="username" type="email" />
+                    <input onBlur={handleBlur} onChange={handleChange} placeholder="Username" className="input-element" name="username" type="email" required />
+                    {errors.username && <p className="validation-message" >{errors.username}</p> }
                     <h3>Contraseña</h3>
-                    <input onChange={handleChange} placeholder="Password" className="input-element" name="password" type="password"/>
+                    <input onBlur={handleBlur} onChange={handleChange} placeholder="Password" className="input-element" name="password" type="password" required />
+                    {errors.password && <p className="validation-message">{errors.password}</p> }
                     {(!isSubmit)? 
-                    <button onClick={()=>{
-                        setIsSubmit(true);
-                        sendInformation();
-                    }} className="button-element">Login</button>
+                    <input className="button-element" type="submit" value="Login" />
                     : <Loader/> }
-                </div>
+                    {errors.login && <p className="validation-message" >{errors.login}</p> }
+                </form>
             </div>
         )
     }

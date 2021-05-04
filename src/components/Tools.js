@@ -62,3 +62,16 @@ export const methodUpdate= async (url,form,axios,reqError,reqSuccess)=>{
         reqError(err);
     }
 }
+export const validationForm=(form)=>{
+    let errors={};
+    let regexEmail = /^(\w+[/./-]?){1,}@[a-z]+[/.]\w{2,}$/;
+    if(!form.username.trim()){
+        errors.username="Es necesario ingresar su correo";
+    }else if(!regexEmail.test(form.username.trim())){
+        errors.username="Correo incorrecto";
+    }
+    if(!form.password.trim()){
+        errors.password="Es necesario ingresar su contraseña";
+    }
+    return errors
+}

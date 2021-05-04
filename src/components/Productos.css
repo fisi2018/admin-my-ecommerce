@@ -91,6 +91,16 @@
   transform: translateY(-0.25rem);
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
 }
+.modal-button {
+  cursor: pointer;
+  outline: 0;
+  border: 0;
+  font-family: "Montserrat";
+  padding: 0.5rem 1rem;
+  color: white;
+  background-color: black;
+  border-radius: 8px;
+}
 @media screen and (max-width: 420px) {
   .row {
     width: max-content;

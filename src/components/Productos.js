@@ -198,7 +198,7 @@ export default function Productos(){
                 <input name="nameColor" onChange={handleActColor} placeholder="Color" className="input-element small" type="text"/>
                 <input onChange={handleActColor} name="imgColor" className="input-img" accept="img/*" type="file"/>
                 <input onChange={handleActColor} name="codeColor" type="color"/>
-                <button onClick={()=>actualizarColor(id)}>Actualizar</button>
+                <button className="modal-button" onClick={()=>actualizarColor(id)}>Actualizar</button>
             </div>
         )
     };
