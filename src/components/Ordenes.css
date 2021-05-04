@@ -14,3 +14,27 @@
 .container-complete > h2 {
   font-weight: 400;
 }
+@media screen and (max-width: 420px) {
+  .categorias-container {
+    width: 100%;
+    margin: 0;
+    overflow-x: scroll;
+  }
+  .container-complete {
+    width: 100%;
+    flex-wrap: wrap;
+    margin: 0;
+  }
+  .details-container {
+    width: max-content;
+    margin: 0 3rem;
+  }
+  .orden-style > * {
+    margin: 0 1rem;
+  }
+
+  .container-complete > h2 {
+    text-align: center;
+    margin: 0;
+  }
+}

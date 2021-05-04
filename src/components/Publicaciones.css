@@ -1,0 +1,5 @@
+@media screen and (max-width: 420px) {
+  .details-container > * {
+    margin: 0.25rem 1rem;
+  }
+}

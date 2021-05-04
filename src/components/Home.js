@@ -413,12 +413,36 @@ export const header=(burger,burger2,asidePanel)=>{
                     <h3>{cookies.get("name")}</h3>
                 </div>
                 <ul className="list-container">
-                    <li><Link to="/">Inicio</Link></li>
-                    <li><Link to="/ordenes" > Ver órdenes </Link></li>
-                    <li><Link to="/productos">Ver productos</Link></li>
-                    <li><Link to="/categorias" >Ver categorías</Link></li>
-                    <li><Link to="/publicaciones" >Ver publicaciones</Link></li>
-                    {cookies.get("role")==="1" && <li><Link to="/usuarios">Ver usuarios</Link></li>}
+                    <li onClick={()=>{
+                        burger.current.classList.toggle("is-active");
+                        burger2.current.classList.toggle("is-active");
+                        asidePanel.current.classList.toggle("show")
+                    }} ><Link  to="/">Inicio</Link></li>
+                    <li onClick={()=>{
+                        burger.current.classList.toggle("is-active");
+                        burger2.current.classList.toggle("is-active");
+                        asidePanel.current.classList.toggle("show")
+                    }} ><Link to="/ordenes" > Ver órdenes </Link></li>
+                    <li onClick={()=>{
+                        burger.current.classList.toggle("is-active");
+                        burger2.current.classList.toggle("is-active");
+                        asidePanel.current.classList.toggle("show")
+                    }} ><Link to="/productos">Ver productos</Link></li>
+                    <li onClick={()=>{
+                        burger.current.classList.toggle("is-active");
+                        burger2.current.classList.toggle("is-active");
+                        asidePanel.current.classList.toggle("show")
+                    }} ><Link to="/categorias" >Ver categorías</Link></li>
+                    <li onClick={()=>{
+                        burger.current.classList.toggle("is-active");
+                        burger2.current.classList.toggle("is-active");
+                        asidePanel.current.classList.toggle("show")
+                    }} ><Link to="/publicaciones" >Ver publicaciones</Link></li>
+                    {cookies.get("role")==="1" && <li onClick={()=>{
+                        burger.current.classList.toggle("is-active");
+                        burger2.current.classList.toggle("is-active");
+                        asidePanel.current.classList.toggle("show")
+                    }} ><Link to="/usuarios">Ver usuarios</Link></li>}
                     
                 </ul>
             </aside>

@@ -91,7 +91,7 @@ export default function Ordenes(){
                         {list[el._id] && <div className="details-container">
                             {
                                 el.list.map((obj)=>(
-                                    <li className="category-element orden-style">
+                                    <li key={obj._id} className="category-element orden-style">
                                         <p>{obj.producto._id}</p>
                                         <p>{obj.producto.name}</p>
                                         <p>{obj.size}</p>

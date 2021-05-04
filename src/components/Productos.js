@@ -258,7 +258,7 @@ export default function Productos(){
                             <DeleteIcon/><p>Eliminar</p></button>
                         </div>
                     </li>
-                    {list[el._id] && <div className="details-container row">
+                    {list[el._id] && <div key={el._id} className="details-container row">
                                         
                                         <img className="img-element" src={`${API}/producto/img/${el._id}`} alt={el.name}/> 
                                         <div className="description-block">
@@ -290,8 +290,8 @@ export default function Productos(){
                                         </Modal>
                                         </div>
                                         <ul className="ul-block">
-                                            { el.colors.map((color)=>(
-                                                <li className="list-color">
+                                            { el.colors.map((color,index)=>(
+                                                <li key={index} className="list-color">
                                                     <p>{color.nameColor}</p>
                                                     <span className="color-circle" style={{backgroundColor:color.codeColor}} ></span>
                                                     <button className="button-delete" onClick={()=>deleteColor(color.nameColor,el._id)} >
