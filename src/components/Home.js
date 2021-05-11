@@ -3,7 +3,7 @@ import {useEffect,useState} from "react";
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import {API} from "../config";
 import Cookies from "universal-cookie";
-import {Link} from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 import Loader from "./Loader";
 import imgUser from "../img/user.png";
 import axios from "axios";
@@ -417,33 +417,33 @@ export const header=(burger,burger2,asidePanel)=>{
                         burger.current.classList.toggle("is-active");
                         burger2.current.classList.toggle("is-active");
                         asidePanel.current.classList.toggle("show")
-                    }} ><Link  to="/">Inicio</Link></li>
+                    }} ><NavLink exact to="/" activeClassName="link-select" >Inicio</NavLink></li>
+                    
                     <li onClick={()=>{
                         burger.current.classList.toggle("is-active");
                         burger2.current.classList.toggle("is-active");
                         asidePanel.current.classList.toggle("show")
-                    }} ><Link to="/ordenes" > Ver órdenes </Link></li>
+                    }} ><NavLink exact to="/ordenes" activeClassName="link-select" > Ver órdenes </NavLink></li>
                     <li onClick={()=>{
                         burger.current.classList.toggle("is-active");
                         burger2.current.classList.toggle("is-active");
                         asidePanel.current.classList.toggle("show")
-                    }} ><Link to="/productos">Ver productos</Link></li>
+                    }} ><NavLink exact to="/productos" activeClassName="link-select" >Ver productos</NavLink></li>
                     <li onClick={()=>{
                         burger.current.classList.toggle("is-active");
                         burger2.current.classList.toggle("is-active");
                         asidePanel.current.classList.toggle("show")
-                    }} ><Link to="/categorias" >Ver categorías</Link></li>
+                    }} ><NavLink exact to="/categorias" activeClassName="link-select" >Ver categorías</NavLink></li>
                     <li onClick={()=>{
                         burger.current.classList.toggle("is-active");
                         burger2.current.classList.toggle("is-active");
                         asidePanel.current.classList.toggle("show")
-                    }} ><Link to="/publicaciones" >Ver publicaciones</Link></li>
+                    }} ><NavLink exact to="/publicaciones" activeClassName="link-select" >Ver publicaciones</NavLink></li>
                     {cookies.get("role")==="1" && <li onClick={()=>{
                         burger.current.classList.toggle("is-active");
                         burger2.current.classList.toggle("is-active");
                         asidePanel.current.classList.toggle("show")
-                    }} ><Link to="/usuarios">Ver usuarios</Link></li>}
-                    
+                    }} ><NavLink exact to="/usuarios" activeClassName="link-select" >Ver usuarios</NavLink></li>}
                 </ul>
             </aside>
         )

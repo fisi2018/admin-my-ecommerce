@@ -1,6 +1,9 @@
 .large {
   height: 35rem;
 }
+.link-select {
+  background-color: #909090;
+}
 .select-element {
   font-family: "Montserrat";
   border-radius: 8px;
